@@ -401,3 +401,22 @@ func TestDecodeComplex(t *testing.T) {
 	}
 	t.Log(expect5, out5)
 }
+
+func TestErrors(t *testing.T) {
+	in := "d1:eli201e23:A Generic Error Ocurrede1:t2:aa1:y1:ee"
+	type testerrors struct {
+		T string        `json:"t"`
+		Y string        `json:"y"`
+		E []interface{} `json:"e"`
+	}
+	//	out := testerrors{}
+	out := map[string]interface{}{}
+	err := Decode([]byte(in), &out)
+	t.Log(err, out)
+}
+func TestDecodeMultiMap(t *testing.T) {
+	in := "d3:agei36e5:embedd4:wheni3e5:where5:wheree2:id8:identify2:ltli1e5:itemse2:mpd5:citysi2e7:peoplesi1ee1:q4:ping1:t3:1233:whoi42ee"
+	out := map[string]interface{}{}
+	err := Decode([]byte(in), &out)
+	t.Logf("%v,%#v", err, out)
+}

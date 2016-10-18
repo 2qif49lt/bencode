@@ -68,7 +68,7 @@ func Decode(data []byte, v interface{}) error {
 			rv = reflect.ValueOf(&x).Elem()
 		}
 
-		if rk != reflect.Slice {
+		if rk != reflect.Slice && rk != reflect.Interface {
 			return errors.New("need slice")
 		}
 		ek := rv.Type().Elem() //element type
@@ -99,10 +99,10 @@ func Decode(data []byte, v interface{}) error {
 			rv = reflect.ValueOf(&x).Elem()
 		}
 
-		if rk != reflect.Map && rk != reflect.Struct {
+		if rv.Kind() != reflect.Map && rv.Kind() != reflect.Struct {
 			return errors.New("need map or struct")
 		}
-		if rk == reflect.Map && rv.Type().Key().Kind() != reflect.String {
+		if rv.Kind() == reflect.Map && rv.Type().Key().Kind() != reflect.String {
 			return errors.New("map key need be string")
 		}
 
@@ -126,7 +126,7 @@ func Decode(data []byte, v interface{}) error {
 				}
 				keyval.SetString(keystr)
 			} else {
-				if rk == reflect.Map {
+				if rv.Kind() == reflect.Map {
 					if rv.IsNil() {
 						rv.Set(reflect.MakeMap(reflect.MapOf(rv.Type().Key(),
 							rv.Type().Elem())))
@@ -168,7 +168,7 @@ func Decode(data []byte, v interface{}) error {
 		if err != nil {
 			return err
 		}
-		if rk == reflect.Interface {
+		if rv.Kind() == reflect.Interface {
 			rv.Set(reflect.ValueOf(str))
 		} else {
 			rv.SetString(str)
